@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+import time
 
 from kafka import KafkaConsumer
 
@@ -13,6 +14,7 @@ def parse_args(parser):
     args = parser.parse_args()
     args.brokers = get_arg('KAFKA_BROKERS', args.brokers)
     args.topic = get_arg('KAFKA_TOPIC', args.topic)
+    args.delay = int(get_arg('DELAY', args.delay))
     return args
 
 
@@ -21,6 +23,7 @@ def main(args):
     for msg in consumer:
         out = msg.value if msg.value is not None else ""
         logging.info('received: ' + str(msg.value, 'utf-8'))
+        time.sleep(args.delay)
     logging.info('exiting')
 
 
@@ -37,5 +40,9 @@ if __name__ == '__main__':
             '--topic',
             help='Topic to publish to, env variable KAFKA_TOPIC',
             default='bones-brigade')
+    parser.add_argument(
+            '--delay',
+            help='Seconds to delay between processing messages from topic',
+            default='1')
     args = parse_args(parser)
     main(args)
