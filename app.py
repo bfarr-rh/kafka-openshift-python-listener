@@ -15,11 +15,12 @@ def parse_args(parser):
     args.brokers = get_arg('KAFKA_BROKERS', args.brokers)
     args.topic = get_arg('KAFKA_TOPIC', args.topic)
     args.delay = int(get_arg('DELAY', args.delay))
+    args.cgroup = get_arg('CONSUMER_GROUP', args.cgroup)
     return args
 
 
 def main(args):
-    consumer = KafkaConsumer(args.topic, group_id='my-kafka-consumer-group', bootstrap_servers=args.brokers)
+    consumer = KafkaConsumer(args.topic, group_id=args.cgroup, bootstrap_servers=args.brokers)
     for msg in consumer:
         out = msg.value if msg.value is not None else ""
         logging.info('received: ' + str(msg.value, 'utf-8'))
@@ -44,5 +45,9 @@ if __name__ == '__main__':
             '--delay',
             help='Seconds to delay between processing messages from topic',
             default='1')
+    parser.add_argument(
+            '--cg',
+            help='Consumer Group',
+            default='') 
     args = parse_args(parser)
     main(args)
