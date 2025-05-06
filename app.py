@@ -46,7 +46,7 @@ if __name__ == '__main__':
             help='Seconds to delay between processing messages from topic',
             default='1')
     parser.add_argument(
-            '--cg',
+            '--cgroup',
             help='Consumer Group',
             default='') 
     args = parse_args(parser)
